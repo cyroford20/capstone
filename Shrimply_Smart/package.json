@@ -1,0 +1,11 @@
+{
+  "scripts": {
+    "start": "start.bat",
+    "backend": "cd backend && .venv\\Scripts\\activate && python manage.py runserver 0.0.0.0:8000",
+    "frontend": "cd frontend && npm run dev"
+  },
+  "dependencies": {
+    "axios": "^1.13.5",
+    "serialport": "^13.0.0"
+  }
+}

@@ -1,0 +1,49 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+env/
+venv/
+*.pyo
+
+# Django
+backend/db.sqlite3
+backend/.env
+
+# Firebase credentials (NEVER commit these)
+*-firebase-adminsdk-*.json
+*-firebase-adminsdk*.json
+firebase-*.json
+serviceAccountKey.json
+
+# Dataset / ML artifacts
+dataset/models/
+dataset/data/*.csv
+dataset/preprocessing/*.pkl
+dataset/mlruns/
+*.h5
+
+# Node
+node_modules/
+frontend/dist/
+
+# Frontend env (may contain API keys)
+frontend/.env
+frontend/.env.local
+
+# Editor
+.vscode/
+.idea/
+.DS_Store
+
+# Logs
+*.log
+
+# OS files
+Thumbs.db
+Desktop.ini
+
+# Temp files
+*.tmp
+tmpclaude-*

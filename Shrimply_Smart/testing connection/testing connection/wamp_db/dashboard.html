@@ -1,0 +1,36 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Shrimp Dashboard (DB)</title>
+</head>
+<body>
+  <h2>Latest Reading (from MySQL)</h2>
+  <p>Distance (cm): <span id="dist">...</span></p>
+  <p>Servo: <span id="servo">...</span></p>
+  <p>Timestamp: <span id="ts">...</span></p>
+  
+
+  <script>
+    async function refresh() {
+      try {
+        const r = await fetch('get_latest.php', { cache: 'no-store' });
+        const j = await r.json();
+        if (!j.ok || !j.latest) throw new Error('no data');
+
+        document.getElementById('dist').textContent = j.latest.distance ?? 'NA';
+        document.getElementById('servo').textContent = j.latest.servoOnOrOff ?? 'NA';
+        document.getElementById('ts').textContent = j.latest.ts ?? 'NA';
+      } catch (e) {
+        document.getElementById('dist').textContent = 'ERR';
+        document.getElementById('servo').textContent = 'ERR';
+        document.getElementById('ts').textContent = 'ERR';
+      }
+    }
+
+    refresh();
+    setInterval(refresh, 6000);
+  </script>
+</body>
+</html>

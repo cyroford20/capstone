@@ -1,0 +1,69 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Shrimp Control</title>
+</head>
+<body>
+  <h2>Servo</h2>
+  <button id="on">ON</button>
+  <button id="off">OFF</button>
+  <p>Servo state: <span id="servo">...</span></p>
+
+  <p>WeMos API: <span id="base">(not set)</span></p>
+
+  <h2>Ultrasonic</h2>
+  <p>Distance (cm): <span id="dist">...</span></p>
+
+  <script>
+    // Two-laptop setup:
+    // - This page is served by your WAMP laptop (example: http://192.168.8.40/shrimp-ui/)
+    // - The WeMos is a DIFFERENT device with its own IP (example: http://192.168.8.23)
+    //
+    // Set WeMos base URL using one of these:
+    // 1) Query string:  ?wemos=http://192.168.8.23
+    // 2) It will prompt once and save to localStorage
+
+    const qs = new URLSearchParams(location.search);
+    let WEMOS_BASE = qs.get('wemos') || localStorage.getItem('WEMOS_BASE') || '';
+
+    if (!WEMOS_BASE) {
+      WEMOS_BASE = prompt('Enter WeMos base URL (example: http://192.168.8.23)');
+      if (WEMOS_BASE) localStorage.setItem('WEMOS_BASE', WEMOS_BASE);
+    }
+
+    document.getElementById('base').textContent = WEMOS_BASE || '(not set)';
+
+    async function getText(path) {
+      if (!WEMOS_BASE) throw new Error('WEMOS_BASE not set');
+      const r = await fetch(WEMOS_BASE + path);
+      return await r.text();
+    }
+
+    async function refresh() {
+      try {
+        document.getElementById('dist').textContent = await getText('/api/distance');
+        document.getElementById('servo').textContent = await getText('/api/servo');
+      } catch (e) {
+        document.getElementById('dist').textContent = 'ERR';
+        document.getElementById('servo').textContent = 'ERR';
+      }
+    }
+
+    async function setServo(on) {
+      try {
+        await getText(on ? '/api/servo/on' : '/api/servo/off');
+      } finally {
+        await refresh();
+      }
+    }
+
+    document.getElementById('on').addEventListener('click', () => setServo(true));
+    document.getElementById('off').addEventListener('click', () => setServo(false));
+
+    refresh();
+    setInterval(refresh, 6000); // match your 6-second distance update
+  </script>
+</body>
+</html>
